@@ -1,0 +1,39 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+    background-color: black;
+    color: white;
+    border-style: none;
+    border: 2px gray solid;
+    border-radius: 5px;
+    padding: 1em 2em;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: hsla(0, 0%, 0%, 0.74);
+}
+
+.container {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+#box {
+    height: 100px;
+    width: 100px;
+    background-color: green;
+    position: absolute;
+
+    font-weight: bold;
+    font-size: 50px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
