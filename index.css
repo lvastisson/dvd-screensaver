@@ -8,7 +8,8 @@ button {
     border-style: none;
     border: 2px gray solid;
     border-radius: 5px;
-    padding: 1em 2em;
+    padding: 0.5em 1em;
+    margin: 0 0.1rem;
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
@@ -32,17 +33,14 @@ button:hover {
 #box {
     height: 100px;
     width: 100px;
-    background-color: green;
     position: absolute;
-
     font-weight: bold;
     font-size: 50px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
-
+#box svg {
+    display: block;
+    width: 100%;
+}
 #fps {
     position: absolute;
     top: 0px;

@@ -3,7 +3,7 @@ class DVDLoader {
     height = window.innerHeight;
     width = window.innerWidth;
     boxWidth = 200;
-    boxHeight = 100;
+    boxHeight = 88;
     iterations = 0;
     movementIncrement = 1;
     topPos = 0;
@@ -17,6 +17,8 @@ class DVDLoader {
     gameLoop;
     renderLoop;
     fps;
+    logoColors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+    logoColorIndex = 0;
 
     constructor(elem) {
         this.theBox = elem;
@@ -35,7 +37,10 @@ class DVDLoader {
 
         this.theBox.style.height = this.boxHeight + 'px';
         this.theBox.style.width = this.boxWidth + 'px';
+        this.logoSVG = document.querySelector('#logo');
 
+        this.SetLogoColor();
+        
         this.LoadBoxData();
 
         this.SessionStartDate();
@@ -126,6 +131,10 @@ class DVDLoader {
             this.leftPos += this.movementIncrement;
         }
     
+        if (this.sidesHit > 0) {
+            this.SetLogoColor();
+        }
+        
         if (this.sidesHit >= 2) {
             this.CornerHitsCounter();
             this.CornerHit();
@@ -140,7 +149,7 @@ class DVDLoader {
         }
 
         clearTimeout(this.gameLoop);
-        this.gameLoop = setTimeout(this.MoveBoxLoop.bind(this), 1);
+        this.gameLoop = setTimeout(this.MoveBoxLoop.bind(this), 30);
     }
 
     NewFrame() {
@@ -163,9 +172,7 @@ class DVDLoader {
         this.theBox.style.left =this. leftPos + 'px';
         
         this.fpsText.innerHTML = 'fps: ' + this.fps;
-
-        clearInterval(this.renderLoop);
-        this.renderLoop = setTimeout(this.NewFrame.bind(this), 5);
+        this.NewFrame();
     }
     
     CornerHitsCounter() {
@@ -176,14 +183,22 @@ class DVDLoader {
         document.querySelector('#cornersCounter').innerHTML = "Corner hits: " + this.cornerHits;
     }
     
+    SetLogoColor() {
+        this.logoSVG.setAttribute('fill', this.logoColors[this.logoColorIndex]);
+        this.logoColorIndex++;
+        if (this.logoColorIndex > this.logoColors.length - 1) {
+            this.logoColorIndex = 0;
+        }
+    }
+
     CornerHit() {
         this.timesBlinked++;
     
         if (this.timesBlinked % 2 == 1) {
-            this.theBox.style.backgroundColor = "red";
+            this.SetLogoColor();
         }
         else {
-            this.theBox.style.backgroundColor = "green";
+            this.SetLogoColor();
         }
     
         if (this.timesBlinked < 12) {
