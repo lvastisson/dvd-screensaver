@@ -158,7 +158,7 @@ class DVDLoader {
 
             if(!this.lastCalledTime) {
                 this.lastCalledTime = Date.now();
-                fps = 0;
+                this.fps = 0;
                 return;
              }
              let delta = (Date.now() - this.lastCalledTime)/1000;
@@ -266,8 +266,8 @@ class DVDLoader {
             this.storage.set('lastCacheClear', Date(), 1000);
         }
         else {
-            startedDate = this.storage.get('lastCacheClear');
-            document.querySelector('#startedDate').innerHTML = 'Started on: ' + startedDate;
+            this.startedDate = this.storage.get('lastCacheClear');
+            document.querySelector('#startedDate').innerHTML = 'Started on: ' + this.startedDate;
         }
     }
 }
