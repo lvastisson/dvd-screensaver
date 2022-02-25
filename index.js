@@ -19,6 +19,13 @@ class DVDLoader {
         this.theBox = elem;
     }
 
+    RandomizeBox() {
+        this.topPos = this.getRandomInt(0, this.height - this.boxHeight);
+        this.leftPos = this.getRandomInt(0, this.width - this.boxWidth);
+        this.reverseX = Math.random() < 0.5;
+        this.reverseY = Math.random() < 0.5;
+    }
+
     start() {
         this.theBox.style.height = this.boxHeight + 'px';
         this.theBox.style.width = this.boxWidth + 'px';
@@ -86,7 +93,7 @@ class DVDLoader {
     
         this.theBox.style.top = this.topPos + 'px';
         this.theBox.style.left =this. leftPos + 'px';
-        // setTimeout(this.MoveBox(), 1);
+        setTimeout(this.MoveBoxLoop.bind(this), 1);
     }
     
     CornerHitsCounter() {
@@ -117,8 +124,8 @@ class DVDLoader {
         this.reverseX = false;
         this.reverseY = false;
     
-        this.leftPos = this.width - 400 - this.boxWidth;
-        this.topPos = this.height - 400 - this.boxHeight;
+        this.leftPos = this.width - 200 - this.boxWidth;
+        this.topPos = this.height - 200 - this.boxHeight;
     }
     
     SaveBoxData() {
@@ -136,9 +143,9 @@ class DVDLoader {
         // leftPos = localStorage.getItem('leftPos');
     
         this.topPos = parseInt(this.getCookie('topPos')) || 0;
-        this.leftPos = parseInt(this.getCookie('topPos')) || 0;
-        this.reverseX = StringToBool(this.getCookie('reverseX'));
-        this.reverseY = StringToBool(this.getCookie('reverseY'));
+        this.leftPos = parseInt(this.getCookie('leftPos')) || 0;
+        this.reverseX = this.StringToBool(this.getCookie('reverseX'));
+        this.reverseY = this.StringToBool(this.getCookie('reverseY'));
     
         console.log(this.topPos);
         console.log(this.reverseX);
@@ -156,12 +163,19 @@ class DVDLoader {
             return false;
         }
     }
+
+    getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+    }
+      
     
     setCookie(cname, cvalue, exdays) {
         const d = new Date();
         d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
         let expires = "expires=" + d.toUTCString();
-        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        document.cookie = cname + "=" + cvalue + ";" + expires;
     }
     
     getCookie(cname) {
@@ -182,14 +196,20 @@ class DVDLoader {
 
 const DVDInstance = new DVDLoader(document.querySelector("#box"));
 
+function RandomizeBox() {
+    DVDInstance.RandomizeBox();
+}
+
 function StartBoxLoop() {
     DVDInstance.start();
-
-    setTimeout(StartBoxLoop, 1);
 }   
 
 function LoadBoxData() {
     DVDInstance.LoadBoxData();
+}
+
+function SaveBoxData() {
+    DVDInstance.SaveBoxData();
 }
 
 function TeleportCornerHit() {
