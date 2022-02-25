@@ -11,6 +11,9 @@ class DVDLoader {
     reverseX = false;
     reverseY = false;
     cornerHits = 0;
+    sidesHit = 0;
+    timesBlinked = 0;
+    theBox = null;
 
     constructor(elem) {
         this.theBox = elem;
@@ -33,8 +36,6 @@ class DVDLoader {
     }
     
     MoveBoxLoop() {
-    
-        let sidesHit = 0;
     
         if (!this.reverseY && this.topPos + this.boxHeight < this.height) {
             this.topPos += this.movementIncrement;
@@ -74,6 +75,8 @@ class DVDLoader {
             this.CornerHitsCounter();
             this.CornerHit();
         }
+
+        this.sidesHit = 0;
     
         this.iterations++;
     
@@ -83,29 +86,27 @@ class DVDLoader {
     
         this.theBox.style.top = this.topPos + 'px';
         this.theBox.style.left =this. leftPos + 'px';
-        setTimeout(this.MoveBox(), 1);
+        // setTimeout(this.MoveBox(), 1);
     }
     
     CornerHitsCounter() {
         this.cornerHits++;
     
-        document.querySelector('#cornersCounter').innerHTML = "Corner hits: " + cornerHits;
+        document.querySelector('#cornersCounter').innerHTML = "Corner hits: " + this.cornerHits;
     }
-    
-    timesBlinked = 0;
     
     CornerHit() {
         this.timesBlinked++;
     
         if (this.timesBlinked % 2 == 1) {
-            theBox.style.backgroundColor = "red";
+            this.theBox.style.backgroundColor = "red";
         }
         else {
-            theBox.style.backgroundColor = "green";
+            this.theBox.style.backgroundColor = "green";
         }
     
         if (this.timesBlinked < 12) {
-            setTimeout(CornerHit, 250);
+            setTimeout(this.CornerHit.bind(this), 250);
         }
         else {
             this.timesBlinked = 0;
@@ -126,8 +127,8 @@ class DVDLoader {
     
         this.setCookie('topPos', this.topPos, 365);
         this.setCookie('leftPos', this.leftPos, 365);
-        this.setCookie('reverseX', this.BoolToString(this.reverseX), 365);
-        this.setCookie('reverseY', this.BoolToString(this.reverseY), 365);
+        this.setCookie('reverseX', this.reverseX, 365);
+        this.setCookie('reverseY', this.reverseY, 365);
     }
     
     LoadBoxData() {
@@ -183,5 +184,18 @@ const DVDInstance = new DVDLoader(document.querySelector("#box"));
 
 function StartBoxLoop() {
     DVDInstance.start();
+
+    setTimeout(StartBoxLoop, 1);
 }   
 
+function LoadBoxData() {
+    DVDInstance.LoadBoxData();
+}
+
+function TeleportCornerHit() {
+    DVDInstance.TeleportCornerHit();
+}
+
+function RefreshDimensions() {
+    DVDInstance.RefreshDimensions();
+}
