@@ -30,6 +30,10 @@ class DVDLoader {
         this.theBox.style.height = this.boxHeight + 'px';
         this.theBox.style.width = this.boxWidth + 'px';
 
+        this.LoadBoxData();
+
+        this.SessionStartDate();
+
         this.MoveBoxLoop();
     }
 
@@ -99,6 +103,8 @@ class DVDLoader {
     CornerHitsCounter() {
         this.cornerHits++;
     
+        this.setCookie('cornerHits', this.cornerHits, 365);
+
         document.querySelector('#cornersCounter').innerHTML = "Corner hits: " + this.cornerHits;
     }
     
@@ -132,15 +138,17 @@ class DVDLoader {
         // localStorage.setItem('topPos', topPos);
         // localStorage.setItem('leftPos', leftPos);
     
-        this.setCookie('topPos', this.topPos, 365);
-        this.setCookie('leftPos', this.leftPos, 365);
-        this.setCookie('reverseX', this.reverseX, 365);
-        this.setCookie('reverseY', this.reverseY, 365);
+        this.setCookie('topPos', this.topPos, 1000);
+        this.setCookie('leftPos', this.leftPos, 1000);
+        this.setCookie('reverseX', this.reverseX, 1000);
+        this.setCookie('reverseY', this.reverseY, 1000);
     }
     
     LoadBoxData() {
         // topPos = localStorage.getItem('topPos');
         // leftPos = localStorage.getItem('leftPos');
+        this.cornerHits = parseInt(this.getCookie('cornerHits')) || 0;
+        document.querySelector('#cornersCounter').innerHTML = "Corner hits: " + this.cornerHits;
     
         this.topPos = parseInt(this.getCookie('topPos')) || 0;
         this.leftPos = parseInt(this.getCookie('leftPos')) || 0;
@@ -191,6 +199,16 @@ class DVDLoader {
             }
         }
         return "";
+    }
+
+    SessionStartDate() {
+        if (this.getCookie('lastCacheClear') == '') {
+            this.setCookie('lastCacheClear', Date(), 1000);
+        }
+        else {
+            startedDate = this.getCookie('lastCacheClear');
+            document.querySelector('#startedDate').innerHTML = 'Started on: ' + startedDate;
+        }
     }
 }
 
