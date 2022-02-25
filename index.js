@@ -1,47 +1,5 @@
-document.getElementById("test").innerHTML = "Testtt";
-
-function Runn() {
-    document.getElementById("test").innerHTML = "Lorem";
-}
-
-var counter = 0;
-
-var longIsRunning = true;
-
-function StartLong() {
-    longIsRunning = true;
-
-    LongFunction();
-}
-
-function LongFunction() {
-    counter++;
-
-    document.getElementById("test").innerHTML = "Lorem" + counter;
-
-    RefreshColor()
-
-    if (longIsRunning) {
-        setTimeout(LongFunction, 0);
-    }
-}
-
-function StopLong() {
-    longIsRunning = false;
-    RefreshColor()
-}
-
-function RefreshColor() {
-    if (longIsRunning) {
-        document.getElementById("test").style.color = "green";
-    }
-    else {
-        document.getElementById("test").style.color = "red";
-    }
-}
-
-const height = window.innerHeight;
-const width = window.innerWidth;
+var height = window.innerHeight;
+var width = window.innerWidth;
 const theBox = document.getElementById("box");
 
 
@@ -58,11 +16,18 @@ var leftPos = 0;
 var reverseX = false;
 var reverseY = false;
 
+var cornerHits = 0;
+
 function StartBoxLoop() {
     theBox.style.height = boxHeight + 'px';
     theBox.style.width = boxWidth + 'px';
 
     MoveBoxLoop();
+}
+
+function RefreshDimensions() {
+    height = window.innerHeight;
+    width = window.innerWidth;
 }
 
 function MoveBox() {
@@ -108,6 +73,7 @@ function MoveBoxLoop() {
     }
 
     if (sidesHit >= 2) {
+        CornerHitsCounter();
         CornerHit();
     }
 
@@ -120,6 +86,12 @@ function MoveBoxLoop() {
     theBox.style.top = topPos + 'px';
     theBox.style.left = leftPos + 'px';
     setTimeout(MoveBox, 1);
+}
+
+function CornerHitsCounter() {
+    cornerHits++;
+
+    document.getElementById('cornersCounter').innerHTML = "Corner hits: " + cornerHits;
 }
 
 var timesBlinked = 0;

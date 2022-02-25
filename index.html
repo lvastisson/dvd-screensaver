@@ -9,18 +9,14 @@
 </head>
 <body>
     <div class="container">
-        <div>
-            <h1 id="test">Text</h1>
-            <button onclick="Runn()">Test</button>
-            <button onclick="StartLong()">Long Function</button>
-            <button onclick="StopLong()">Stop Long Function</button>
-        </div>
-    </div>
-
-    <div class="container">
         <button onclick="StartBoxLoop()">Move Box</button>
         <!-- <button onclick="LoadBoxData()">Load Box</button> -->
         <button onclick="TeleportCornerHit()">Set up Corner hit</button>
+        <button onclick="RefreshDimensions()">Refresh window dimensions</button>
+    </div>
+
+    <div class="container">
+        <p id="cornersCounter">Corner hits: 0</p>
     </div>
 
     <div class="box" id="box">
