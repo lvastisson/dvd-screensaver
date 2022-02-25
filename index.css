@@ -25,7 +25,7 @@ button:hover {
 }
 
 .container2 {
-    margin-top: 2rem;
+    margin-top: 40vh;
     text-align: center;
 }
 
@@ -41,4 +41,11 @@ button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#fps {
+    position: absolute;
+    top: 0px;
+    left: 10px;
+    font-weight: bold;
 }

@@ -9,18 +9,19 @@
 </head>
 <body>
     <div class="container">
-        <button onclick="RandomizeBox()">Randomize</button>
-        <button onclick="StartBoxLoop()">Start Box Movement</button>
-         <button onclick="SaveBoxData()">Save Box</button> 
-         <button onclick="LoadBoxData()">Load Box</button> 
-        <button onclick="TeleportCornerHit()">Set up Corner hit</button>
-        <button onclick="RefreshDimensions()">Refresh window dimensions</button>
+        <button id="RandomizeBox">Randomize</button>
+        <button id="StartBoxLoop">Start Box Movement</button>
+         <button id="SaveBoxData">Save Box</button> 
+         <button id="LoadBoxData">Load Box</button> 
+        <button id="TeleportCornerHit">Set up Corner hit</button>
     </div>
 
     <div class="container2">
         <p id="cornersCounter">Corner hits: 0</p>
         <p id="startedDate"></p>
     </div>
+
+    <p id="fps"></p>
 
     <div class="box" id="box">
         DVD

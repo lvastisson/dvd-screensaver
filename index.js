@@ -14,9 +14,13 @@ class DVDLoader {
     sidesHit = 0;
     timesBlinked = 0;
     theBox = null;
+    gameLoop;
+    renderLoop;
+    fps;
 
     constructor(elem) {
         this.theBox = elem;
+        this.storage = new Storage();
     }
 
     RandomizeBox() {
@@ -26,7 +30,9 @@ class DVDLoader {
         this.reverseY = Math.random() < 0.5;
     }
 
-    start() {
+    initialize() {
+        this.fpsText = document.querySelector("#fps");
+
         this.theBox.style.height = this.boxHeight + 'px';
         this.theBox.style.width = this.boxWidth + 'px';
 
@@ -34,7 +40,45 @@ class DVDLoader {
 
         this.SessionStartDate();
 
-        this.MoveBoxLoop();
+        this.bindEvents();
+
+        this.start();
+    }
+
+    start() {
+        this.MoveBoxLoop();   
+        this.RenderBoxLoop();     
+    }
+
+    bindEvents() {
+        document.querySelector('#RandomizeBox').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.RandomizeBox();
+        });
+
+        document.querySelector('#StartBoxLoop').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.start();
+        });
+
+        document.querySelector('#SaveBoxData').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.SaveBoxData();
+        });
+
+        document.querySelector('#LoadBoxData').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.LoadBoxData();
+        });
+
+        document.querySelector('#TeleportCornerHit').addEventListener('click', (e) => {
+            e.preventDefault();
+            this.TeleportCornerHit();
+        });
+
+        window.addEventListener('resize', (e) => {
+            this.RefreshDimensions();
+        });
     }
 
     RefreshDimensions() {
@@ -94,16 +138,40 @@ class DVDLoader {
         if(this.iterations % 100 == 0) {
             this.SaveBoxData();
         }
-    
+
+        clearTimeout(this.gameLoop);
+        this.gameLoop = setTimeout(this.MoveBoxLoop.bind(this), 1);
+    }
+
+    NewFrame() {
+        window.requestAnimationFrame(() => {
+            this.RenderBoxLoop();
+
+            if(!this.lastCalledTime) {
+                this.lastCalledTime = Date.now();
+                fps = 0;
+                return;
+             }
+             let delta = (Date.now() - this.lastCalledTime)/1000;
+             this.lastCalledTime = Date.now();
+             this.fps = Math.round(1/delta);
+        });
+    }
+
+    RenderBoxLoop() {
         this.theBox.style.top = this.topPos + 'px';
         this.theBox.style.left =this. leftPos + 'px';
-        setTimeout(this.MoveBoxLoop.bind(this), 1);
+        
+        this.fpsText.innerHTML = 'fps: ' + this.fps;
+
+        clearInterval(this.renderLoop);
+        this.renderLoop = setTimeout(this.NewFrame.bind(this), 5);
     }
     
     CornerHitsCounter() {
         this.cornerHits++;
     
-        this.setCookie('cornerHits', this.cornerHits, 365);
+        this.storage.set('cornerHits', this.cornerHits, 365);
 
         document.querySelector('#cornersCounter').innerHTML = "Corner hits: " + this.cornerHits;
     }
@@ -138,22 +206,22 @@ class DVDLoader {
         // localStorage.setItem('topPos', topPos);
         // localStorage.setItem('leftPos', leftPos);
     
-        this.setCookie('topPos', this.topPos, 1000);
-        this.setCookie('leftPos', this.leftPos, 1000);
-        this.setCookie('reverseX', this.reverseX, 1000);
-        this.setCookie('reverseY', this.reverseY, 1000);
+        this.storage.set('topPos', this.topPos, 1000);
+        this.storage.set('leftPos', this.leftPos, 1000);
+        this.storage.set('reverseX', this.reverseX, 1000);
+        this.storage.set('reverseY', this.reverseY, 1000);
     }
     
     LoadBoxData() {
         // topPos = localStorage.getItem('topPos');
         // leftPos = localStorage.getItem('leftPos');
-        this.cornerHits = parseInt(this.getCookie('cornerHits')) || 0;
+        this.cornerHits = parseInt(this.storage.get('cornerHits')) || 0;
         document.querySelector('#cornersCounter').innerHTML = "Corner hits: " + this.cornerHits;
     
-        this.topPos = parseInt(this.getCookie('topPos')) || 0;
-        this.leftPos = parseInt(this.getCookie('leftPos')) || 0;
-        this.reverseX = this.StringToBool(this.getCookie('reverseX'));
-        this.reverseY = this.StringToBool(this.getCookie('reverseY'));
+        this.topPos = parseInt(this.storage.get('topPos')) || 0;
+        this.leftPos = parseInt(this.storage.get('leftPos')) || 0;
+        this.reverseX = this.StringToBool(this.storage.get('reverseX'));
+        this.reverseY = this.StringToBool(this.storage.get('reverseY'));
     
         console.log(this.topPos);
         console.log(this.reverseX);
@@ -177,16 +245,32 @@ class DVDLoader {
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
     }
-      
+
+    SessionStartDate() {
+        if (this.storage.get('lastCacheClear') == '') {
+            this.storage.set('lastCacheClear', Date(), 1000);
+        }
+        else {
+            startedDate = this.storage.get('lastCacheClear');
+            document.querySelector('#startedDate').innerHTML = 'Started on: ' + startedDate;
+        }
+    }
+}
+
+class Storage {
+
+    constructor(storageType) {
+        this.storageType = storageType;
+    }
     
-    setCookie(cname, cvalue, exdays) {
+    set(cname, cvalue, exdays) {
         const d = new Date();
         d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
         let expires = "expires=" + d.toUTCString();
         document.cookie = cname + "=" + cvalue + ";" + expires;
     }
     
-    getCookie(cname) {
+    get(cname) {
         let name = cname + "=";
         let ca = document.cookie.split(';');
         for (let i = 0; i < ca.length; i++) {
@@ -200,40 +284,7 @@ class DVDLoader {
         }
         return "";
     }
-
-    SessionStartDate() {
-        if (this.getCookie('lastCacheClear') == '') {
-            this.setCookie('lastCacheClear', Date(), 1000);
-        }
-        else {
-            startedDate = this.getCookie('lastCacheClear');
-            document.querySelector('#startedDate').innerHTML = 'Started on: ' + startedDate;
-        }
-    }
 }
 
 const DVDInstance = new DVDLoader(document.querySelector("#box"));
-
-function RandomizeBox() {
-    DVDInstance.RandomizeBox();
-}
-
-function StartBoxLoop() {
-    DVDInstance.start();
-}   
-
-function LoadBoxData() {
-    DVDInstance.LoadBoxData();
-}
-
-function SaveBoxData() {
-    DVDInstance.SaveBoxData();
-}
-
-function TeleportCornerHit() {
-    DVDInstance.TeleportCornerHit();
-}
-
-function RefreshDimensions() {
-    DVDInstance.RefreshDimensions();
-}
+DVDInstance.initialize();
