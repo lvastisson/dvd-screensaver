@@ -1,6 +1,7 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: black;
+    color: white;
 }
 
 button {
@@ -26,7 +27,7 @@ button:hover {
     justify-content: center;
 }
 
-.container2 {
+.container2{
     margin-top: 40vh;
     text-align: center;
 }

@@ -149,7 +149,7 @@ class DVDLoader {
         }
 
         clearTimeout(this.gameLoop);
-        this.gameLoop = setTimeout(this.MoveBoxLoop.bind(this), 30);
+        this.gameLoop = setTimeout(this.MoveBoxLoop.bind(this), 10);
     }
 
     NewFrame() {
