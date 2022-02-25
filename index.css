@@ -1,12 +1,13 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
+    background-color: black;
 }
 
 button {
-    background-color: black;
+    background-color: rgb(66, 66, 66);
     color: white;
     border-style: none;
-    border: 2px gray solid;
+    border: 2px rgb(22, 22, 22) solid;
     border-radius: 5px;
     padding: 0.5em 1em;
     margin: 0 0.1rem;
