@@ -1,3 +1,3 @@
-# javascript-playground
+# DVD screensaver
 
 DVD screensaver bouncing logo
